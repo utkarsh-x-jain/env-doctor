@@ -93,6 +93,14 @@ describe('parser', () => {
       const content = 'FOO=first\nFOO=second\nFOO=third';
       const result = parseEnv(content);
       assert.deepStrictEqual(result.parsed, { FOO: 'third' });
+      // FOO appears 3 times, so 2 duplicates
+      assert.deepStrictEqual(result.duplicates, ['FOO', 'FOO']);
+    });
+
+    it('should handle export without space', () => {
+      const content = 'export FOO=bar\nexportBAZ=qux';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, { FOO: 'bar', BAZ: 'qux' });
     });
 
     it('should handle escaped characters in double quotes', () => {
@@ -136,6 +144,38 @@ describe('parser', () => {
       const content = 'FOO=hello@world.com\nBAR=path/to/file\nBAZ=$HOME/.config';
       const result = parseEnv(content);
       assert.deepStrictEqual(result.parsed, { FOO: 'hello@world.com', BAR: 'path/to/file', BAZ: '$HOME/.config' });
+    });
+
+    it('should handle multiple duplicate keys', () => {
+      const content = 'FOO=first\nBAR=second\nFOO=third\nBAZ=fourth\nBAR=fifth';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, { FOO: 'third', BAR: 'fifth', BAZ: 'fourth' });
+      assert.deepStrictEqual(result.duplicates.sort(), ['BAR', 'FOO'].sort());
+    });
+
+    it('should handle value with escaped quote in double quotes', () => {
+      const content = 'FOO="hello \\"world\\""';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, { FOO: 'hello "world"' });
+    });
+
+    it('should handle value with escaped backtick in backticks', () => {
+      const content = 'FOO=`hello \\`world\\``';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, { FOO: 'hello `world`' });
+    });
+
+    it('should handle value with escaped dollar sign', () => {
+      const content = 'FOO="price: \\$100"';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, { FOO: 'price: $100' });
+    });
+
+    it('should handle empty key gracefully', () => {
+      const content = '=value\nVALID=ok';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, { VALID: 'ok' });
+      assert.deepStrictEqual(result.invalidKeys, ['']);
     });
   });
 

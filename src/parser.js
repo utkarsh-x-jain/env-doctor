@@ -6,11 +6,13 @@
 /**
  * Parse a .env file content into key-value pairs.
  * @param {string} content - The content of the .env file
- * @returns {Object} Object with parsed variables and invalid keys
+ * @returns {Object} Object with parsed variables, invalid keys, and duplicates
  */
 export function parseEnv(content) {
   const result = {};
   const invalidKeys = [];
+  const duplicates = [];
+  const seenKeys = new Set();
   const lines = content.split(/\r?\n/);
 
   for (let i = 0; i < lines.length; i++) {
@@ -27,9 +29,12 @@ export function parseEnv(content) {
       continue;
     }
 
-    // Handle export prefix
+    // Handle export prefix (with or without space after export)
     if (trimmedLine.startsWith('export ')) {
       line = trimmedLine.slice(7);
+    } else if (trimmedLine.startsWith('export')) {
+      // Handle 'exportKEY=value' (no space)
+      line = trimmedLine.slice(6);
     }
 
     // Find the first equals sign (not in quotes)
@@ -51,11 +56,18 @@ export function parseEnv(content) {
     // Parse value (handle quotes, escaped chars, inline comments)
     value = parseValue(value);
 
+    // Track duplicates
+    if (seenKeys.has(key)) {
+      duplicates.push(key);
+    } else {
+      seenKeys.add(key);
+    }
+
     // Handle duplicate keys - last one wins (documented behavior)
     result[key] = value;
   }
 
-  return { parsed: result, invalidKeys };
+  return { parsed: result, invalidKeys, duplicates };
 }
 
 /**
