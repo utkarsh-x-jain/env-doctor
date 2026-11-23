@@ -5,7 +5,7 @@
   "type": "module",
   "main": "./src/index.js",
   "bin": {
-    "env-doctor": "./src/cli.js"
+    "env-doctor": "./bin/env-doctor.js"
   },
   "exports": {
     ".": "./src/index.js",
@@ -43,6 +43,7 @@
   },
   "files": [
     "src/",
+    "bin/",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
