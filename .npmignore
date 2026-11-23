@@ -1,0 +1,33 @@
+# Source control
+.git/
+.github/
+
+# Tests
+test/
+
+# Documentation source
+docs/
+
+# Examples
+examples/
+
+# Configuration files
+.eslintrc*
+.prettierrc*
+.tsconfig.json
+
+# CI/CD
+.gitlab-ci.yml
+.travis.yml
+
+# Development
+*.log
+.DS_Store
+
+# Package lock
+package-lock.json
+
+# Temporary
+tmp/
+temp/
+*.tmp

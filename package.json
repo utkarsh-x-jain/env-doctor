@@ -1,0 +1,50 @@
+{
+  "name": "env-doctor",
+  "version": "1.0.0",
+  "description": "Catch environment configuration errors before they break your application.",
+  "type": "module",
+  "main": "./src/index.js",
+  "bin": {
+    "env-doctor": "./src/cli.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./cli": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test test/**/*.test.js",
+    "test:watch": "node --test --watch test/**/*.test.js",
+    "lint": "node --check src/index.js src/parser.js src/validator.js src/reporter.js src/cli.js src/utils.js test/parser.test.js test/validator.test.js test/reporter.test.js test/cli.test.js examples/usage.js",
+    "check": "npm run lint && npm test",
+    "prepublishOnly": "npm run check"
+  },
+  "keywords": [
+    "env",
+    "environment",
+    "variables",
+    "validation",
+    "dotenv",
+    "cli",
+    "configuration",
+    "devops"
+  ],
+  "author": "Utkarsh Jain",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/utkarsh-x-jain/env-doctor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/utkarsh-x-jain/env-doctor/issues"
+  },
+  "homepage": "https://github.com/utkarsh-x-jain/env-doctor#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+}
