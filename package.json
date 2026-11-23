@@ -1,11 +1,11 @@
 {
-  "name": "env-doctor",
+  "name": "@niolx/env-doctor",
   "version": "1.0.0",
   "description": "Catch environment configuration errors before they break your application.",
   "type": "module",
   "main": "./src/index.js",
   "bin": {
-    "env-doctor": "./bin/env-doctor.js"
+    "env-doctor": "bin/env-doctor.js"
   },
   "exports": {
     ".": "./src/index.js",
@@ -32,7 +32,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/utkarsh-x-jain/env-doctor.git"
+    "url": "git+https://github.com/utkarsh-x-jain/env-doctor.git"
   },
   "bugs": {
     "url": "https://github.com/utkarsh-x-jain/env-doctor/issues"

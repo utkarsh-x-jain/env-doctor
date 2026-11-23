@@ -7,8 +7,8 @@
 [![CI](https://github.com/utkarsh-x-jain/env-doctor/workflows/CI/badge.svg)](https://github.com/utkarsh-x-jain/env-doctor/actions)
 
 <!-- npm badges will be available after publishing:
-[![npm version](https://img.shields.io/npm/v/env-doctor.svg)](https://www.npmjs.com/package/env-doctor)
-[![npm downloads](https://img.shields.io/npm/dm/env-doctor.svg)](https://www.npmjs.com/package/env-doctor)
+[![npm version](https://img.shields.io/npm/v/@niolx/env-doctor.svg)](https://www.npmjs.com/package/@niolx/env-doctor)
+[![npm downloads](https://img.shields.io/npm/dm/@niolx/env-doctor.svg)](https://www.npmjs.com/package/@niolx/env-doctor)
 -->
 
 ---
@@ -70,10 +70,10 @@ $ echo $?
 
 ```bash
 # Global install (recommended for CLI usage)
-npm install -g env-doctor
+npm install -g @niolx/env-doctor
 
 # Or as a project dependency
-npm install env-doctor --save-dev
+npm install @niolx/env-doctor --save-dev
 ```
 
 ### Requirements
@@ -179,7 +179,7 @@ env-doctor check --verbose
 ## Programmatic API
 
 ```javascript
-import { validateEnv, checkEnv, parseEnv, formatResult } from 'env-doctor';
+import { validateEnv, checkEnv, parseEnv, formatResult } from '@niolx/env-doctor';
 
 // Full validation with details
 const result = await validateEnv({
@@ -389,7 +389,7 @@ jobs:
         with:
           node-version: '20'
       - run: npm ci
-      - run: npx env-doctor check --strict --allow-extra error
+      - run: npx @niolx/env-doctor check --strict --allow-extra error
 ```
 
 ### GitLab CI
@@ -401,7 +401,7 @@ validate_env:
   image: node:20
   script:
     - npm ci
-    - npx env-doctor check --strict --allow-extra error
+    - npx @niolx/env-doctor check --strict --allow-extra error
 ```
 
 ### Pre-commit Hook
@@ -410,7 +410,7 @@ validate_env:
 # Install
 npm install --save-dev husky
 npx husky install
-npx husky add .husky/pre-commit "npx env-doctor check"
+npx husky add .husky/pre-commit "npx @niolx/env-doctor check"
 ```
 
 ---
