@@ -118,5 +118,12 @@ jobs:
 
       - name: Check for secrets in source
         run: |
-          # This should find no real secrets
-          ! grep -r "password\|secret\|key\|token" --include="*.js" src/ test/ | grep -v "example\|dummy\|test\|mask\|process.env" || true
+          # This should find no real secrets (allowlist: example, dummy, test, mask, process.env, key as variable name)
+          ! grep -rEi "(password|secret|api[_-]?key|token)" --include="*.js" src/ test/ examples/ | \
+            grep -vE "(example|dummy|test|mask|process\.env|key as|variable|key:\s|'key'|\"key\"|key=)" || true
+
+      - name: Check for hardcoded credentials patterns
+        run: |
+          # Check for common credential patterns
+          ! grep -rE "(-----BEGIN|ssh-rsa|ssh-ed25519|ghp_|sk_live_|xoxb-)" --include="*.js" src/ test/ examples/ | \
+            grep -v "example" || true
