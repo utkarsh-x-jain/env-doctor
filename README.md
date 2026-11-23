@@ -2,11 +2,14 @@
 
 > **Catch environment configuration errors before they break your application.**
 
-[![npm version](https://img.shields.io/npm/v/env-doctor.svg)](https://www.npmjs.com/package/env-doctor)
-[![npm downloads](https://img.shields.io/npm/dm/env-doctor.svg)](https://www.npmjs.com/package/env-doctor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
 [![CI](https://github.com/utkarsh-x-jain/env-doctor/workflows/CI/badge.svg)](https://github.com/utkarsh-x-jain/env-doctor/actions)
+
+<!-- npm badges will be available after publishing:
+[![npm version](https://img.shields.io/npm/v/env-doctor.svg)](https://www.npmjs.com/package/env-doctor)
+[![npm downloads](https://img.shields.io/npm/dm/env-doctor.svg)](https://www.npmjs.com/package/env-doctor)
+-->
 
 ---
 
