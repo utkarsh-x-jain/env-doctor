@@ -71,6 +71,36 @@ describe('parser', () => {
       assert.deepStrictEqual(result.parsed, { FOO: 'bar # not a comment', BAR: 'baz # also not' });
     });
 
+    it('should not treat # in unquoted values as comments without preceding whitespace', () => {
+      // # in URLs, passwords, etc. should not be treated as comments
+      const content = 'DATABASE_URL=postgresql://user:pass@localhost/db\nPASSWORD=pass#word\nURL=https://example.com/path#anchor';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, {
+        DATABASE_URL: 'postgresql://user:pass@localhost/db',
+        PASSWORD: 'pass#word',
+        URL: 'https://example.com/path#anchor'
+      });
+    });
+
+    it('should treat # as comment only when preceded by whitespace', () => {
+      const content = 'FOO=bar # comment\nBAR=qux#notacomment\nBAZ=value # another';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, {
+        FOO: 'bar',
+        BAR: 'qux#notacomment',
+        BAZ: 'value'
+      });
+    });
+
+    it('should allow # at start of quoted value', () => {
+      const content = 'VALUE="#notacomment"\nVALUE2="pass#word"';
+      const result = parseEnv(content);
+      assert.deepStrictEqual(result.parsed, {
+        VALUE: '#notacomment',
+        VALUE2: 'pass#word'
+      });
+    });
+
     it('should handle spaces around assignments', () => {
       const content = 'FOO = bar\nBAR =qux\nBAZ= quux';
       const result = parseEnv(content);

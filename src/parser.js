@@ -135,6 +135,7 @@ function isValidKey(key) {
 function parseValue(value) {
   // First, find the end of the value (before any inline comment)
   // We need to track quote state to avoid treating # inside quotes as comments
+  // Inline comments start with # preceded by whitespace (standard dotenv behavior)
   let inSingleQuote = false;
   let inDoubleQuote = false;
   let inBacktick = false;
@@ -169,10 +170,16 @@ function parseValue(value) {
       continue;
     }
 
+    // Inline comment: # preceded by whitespace (or at start of value)
+    // This allows # in URLs, passwords, etc. without being treated as comments
     if (char === '#' && !inSingleQuote && !inDoubleQuote && !inBacktick) {
-      // Found inline comment - value ends here
-      valueEnd = i;
-      break;
+      // Check if # is preceded by whitespace or is at the start
+      if (i === 0 || /\s/.test(value[i - 1])) {
+        // Found inline comment - value ends here
+        valueEnd = i;
+        break;
+      }
+      // Otherwise, # is part of the value (e.g., URL anchor, password with #)
     }
   }
 
