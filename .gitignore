@@ -37,4 +37,4 @@ temp/
 *.tmp
 
 # Package
-package-lock.json
+# package-lock.json is committed for reproducible CI installs
