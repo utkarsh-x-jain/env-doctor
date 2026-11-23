@@ -12,8 +12,8 @@
     "./cli": "./src/cli.js"
   },
   "scripts": {
-    "test": "node --test test/**/*.test.js",
-    "test:watch": "node --test --watch test/**/*.test.js",
+    "test": "node --test test/parser.test.js test/validator.test.js test/reporter.test.js test/cli.test.js",
+    "test:watch": "node --test --watch test/parser.test.js test/validator.test.js test/reporter.test.js test/cli.test.js",
     "lint": "node --check src/index.js src/parser.js src/validator.js src/reporter.js src/cli.js src/utils.js test/parser.test.js test/validator.test.js test/reporter.test.js test/cli.test.js examples/usage.js",
     "check": "npm run lint && npm test",
     "prepublishOnly": "npm run check"
