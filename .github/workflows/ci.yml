@@ -119,11 +119,21 @@ jobs:
       - name: Check for secrets in source
         run: |
           # This should find no real secrets (allowlist: example, dummy, test, mask, process.env, key as variable name)
-          ! grep -rEi "(password|secret|api[_-]?key|token)" --include="*.js" src/ test/ examples/ | \
-            grep -vE "(example|dummy|test|mask|process\.env|key as|variable|key:\s|'key'|\"key\"|key=)" || true
+          # grep returns 0 if matches found, 1 if no matches
+          # We want to FAIL if any real secrets are found after filtering
+          if grep -rEi "(password|secret|api[_-]?key|token)" --include="*.js" src/ test/ examples/ | \
+             grep -vE "(example|dummy|test|mask|process\.env|key as|variable|key:\s|'key'|\"key\"|key=)" ; then
+            echo "::error::Potential secrets found in source code"
+            exit 1
+          fi
+          echo "No secrets detected"
 
       - name: Check for hardcoded credentials patterns
         run: |
           # Check for common credential patterns
-          ! grep -rE "(-----BEGIN|ssh-rsa|ssh-ed25519|ghp_|sk_live_|xoxb-)" --include="*.js" src/ test/ examples/ | \
-            grep -v "example" || true
+          if grep -rE "(-----BEGIN|ssh-rsa|ssh-ed25519|ghp_|sk_live_|xoxb-)" --include="*.js" src/ test/ examples/ | \
+             grep -v "example" ; then
+            echo "::error::Hardcoded credential patterns found"
+            exit 1
+          fi
+          echo "No hardcoded credential patterns detected"
