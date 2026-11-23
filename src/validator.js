@@ -36,6 +36,7 @@ export async function validateEnv(options = {}) {
   const envExists = envResult !== null;
   const envVars = envResult ? envResult.parsed : {};
   const envInvalidKeys = envResult ? envResult.invalidKeys : [];
+  const envDuplicates = envResult ? envResult.duplicates : [];
 
   // Parse .env.example file
   const exampleResult = await parseEnvFile(examplePath);
@@ -153,14 +154,13 @@ export async function validateEnv(options = {}) {
     }
   }
 
-  // Check for duplicates in .env file
-  if (envVars) {
-    const duplicates = findDuplicates(envVars);
-    if (duplicates.length > 0) {
-      result.duplicates = duplicates;
-      for (const key of duplicates) {
-        result.warnings.push(`Duplicate definition in .env: ${key} (last value used)`);
-      }
+  // Check for duplicates in .env file (from parser)
+  if (envDuplicates.length > 0) {
+    // Deduplicate the duplicates list for reporting
+    const uniqueDuplicates = [...new Set(envDuplicates)];
+    result.duplicates = uniqueDuplicates;
+    for (const key of uniqueDuplicates) {
+      result.warnings.push(`Duplicate definition in .env: ${key} (last value used)`);
     }
   }
 
@@ -223,18 +223,6 @@ function getProcessEnvVars() {
  */
 function isValidKey(key) {
   return /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key);
-}
-
-/**
- * Find duplicate keys in parsed env (last one wins).
- * @param {Object} envVars - Parsed environment variables
- * @returns {string[]} Array of duplicate keys
- */
-function findDuplicates(envVars) {
-  // Since we use an object, duplicates are already resolved (last wins)
-  // This would need the raw parsing to detect duplicates properly
-  // For now, return empty - the parser handles this by last-wins
-  return [];
 }
 
 /**

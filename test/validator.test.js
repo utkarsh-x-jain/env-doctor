@@ -175,6 +175,21 @@ describe('validator', () => {
       assert.strictEqual(result.summary.empty, 1);
       assert.strictEqual(result.summary.extra, 1);
     });
+
+    it('should detect duplicate variables in .env', async () => {
+      await createFiles('FOO=first\nFOO=second\nBAR=third', 'FOO=\nBAR=');
+      const result = await validateEnv({ cwd: tempDir });
+      assert.deepStrictEqual(result.duplicates, ['FOO']);
+      assert.ok(result.warnings.some(w => w.includes('Duplicate definition in .env: FOO')));
+    });
+
+    it('should detect multiple duplicate variables', async () => {
+      await createFiles('FOO=first\nBAR=second\nFOO=third\nBAZ=fourth\nBAR=fifth', 'FOO=\nBAR=\nBAZ=');
+      const result = await validateEnv({ cwd: tempDir });
+      assert.deepStrictEqual(result.duplicates.sort(), ['BAR', 'FOO'].sort());
+      assert.ok(result.warnings.some(w => w.includes('Duplicate definition in .env: FOO')));
+      assert.ok(result.warnings.some(w => w.includes('Duplicate definition in .env: BAR')));
+    });
   });
 
   describe('checkEnv', () => {
