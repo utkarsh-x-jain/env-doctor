@@ -188,4 +188,25 @@ describe('cli', () => {
     assert.ok(stdout.includes('su****23') || stdout.includes('****'));
     assert.ok(!stdout.includes('super-secret-key-123'));
   });
+
+  it('should suppress output with --quiet flag', async () => {
+    await createFiles('FOO=bar\nBAZ=qux', 'FOO=\nBAZ=');
+    const { code, stdout } = await runCLI(['check', '--quiet'], tempDir);
+    assert.strictEqual(code, 0);
+    assert.strictEqual(stdout.trim(), '');
+  });
+
+  it('should still return error exit code with --quiet on failure', async () => {
+    await createFiles('FOO=bar', 'FOO=\nBAZ=');
+    const { code, stdout } = await runCLI(['check', '--quiet'], tempDir);
+    assert.strictEqual(code, 1);
+    assert.strictEqual(stdout.trim(), '');
+  });
+
+  it('should respect --quiet with --json', async () => {
+    await createFiles('FOO=bar', 'FOO=');
+    const { code, stdout } = await runCLI(['check', '--quiet', '--json'], tempDir);
+    assert.strictEqual(code, 0);
+    assert.strictEqual(stdout.trim(), '');
+  });
 });

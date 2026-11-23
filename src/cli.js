@@ -31,6 +31,7 @@ Options:
   --strict              Enable strict mode (warnings become errors)
   --json                Output results as JSON
   --verbose             Show all variables in output
+  --quiet               Suppress all output except errors (exit code only)
   --no-process-env      Disable process.env fallback
   --allow-extra <mode>  Handle extra variables: warn|error|ignore (default: warn)
   --required <vars>     Comma-separated list of required variables
@@ -71,6 +72,7 @@ function parseArgs(args) {
     strict: false,
     json: false,
     verbose: false,
+    quiet: false,
     useProcessEnv: true,
     allowExtra: 'warn',
     required: [],
@@ -95,6 +97,8 @@ function parseArgs(args) {
       options.json = true;
     } else if (arg === '--verbose') {
       options.verbose = true;
+    } else if (arg === '--quiet') {
+      options.quiet = true;
     } else if (arg === '--no-process-env') {
       options.useProcessEnv = false;
     } else if (arg === '--allow-extra') {
@@ -156,13 +160,15 @@ export async function main(argv = process.argv.slice(2)) {
         optional: options.optional,
       });
 
-      // Output results
-      if (options.json) {
-        console.log(formatResult(result, { json: true }));
-      } else if (options.verbose) {
-        console.log(formatResult(result, { verbose: true }));
-      } else {
-        console.log(formatResult(result));
+      // Output results (skip if quiet)
+      if (!options.quiet) {
+        if (options.json) {
+          console.log(formatResult(result, { json: true }));
+        } else if (options.verbose) {
+          console.log(formatResult(result, { verbose: true }));
+        } else {
+          console.log(formatResult(result));
+        }
       }
 
       return getExitCode(result);
