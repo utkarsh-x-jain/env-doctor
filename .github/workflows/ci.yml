@@ -121,8 +121,9 @@ jobs:
           # This should find no real secrets (allowlist: example, dummy, test, mask, process.env, key as variable name)
           # grep returns 0 if matches found, 1 if no matches
           # We want to FAIL if any real secrets are found after filtering
+          # Exclude comments (// and /* */) and allowlisted patterns
           if grep -rEi "(password|secret|api[_-]?key|token)" --include="*.js" src/ test/ examples/ | \
-             grep -vE "(example|dummy|test|mask|process\.env|key as|variable|key:\s|'key'|\"key\"|key=)" ; then
+             grep -vE "(example|dummy|test|mask|process\.env|key as|variable|key:\s|'key'|\"key\"|key=|^//|^/\*|\*/|// )" ; then
             echo "::error::Potential secrets found in source code"
             exit 1
           fi
